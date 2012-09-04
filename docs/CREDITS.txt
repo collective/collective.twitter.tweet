@@ -1,0 +1,6 @@
+Contributors
+------------
+
+* Franco Pellegrini (frapell@ravvit.net)
+
+Development sponsored by Open Multimedia.

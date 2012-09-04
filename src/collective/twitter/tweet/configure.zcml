@@ -1,0 +1,68 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="collective.twitter.tweet">
+
+    <include package="plone.contentrules" />
+    <include package="plone.contentrules" file="meta.zcml" />
+
+    <i18n:registerTranslations directory="locales" />
+
+    <genericsetup:registerProfile
+        name="default"
+        title="collective.twitter.tweet"
+        directory="profiles/default"
+        description="Installs the collective.twitter.tweet package"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <genericsetup:registerProfile
+        name="initial"
+        title="collective.twitter.tweet initial"
+        directory="profiles/initial"
+        description="Installs the collective.twitter.tweet package (initial setup)."
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <genericsetup:importStep
+        name="collective.twitter.tweet-importVarious"
+        title="Import various for the initial profile for collective.twitter.tweet"
+        description="Import various for the initial profile for collective.twitter.tweet"
+        handler="collective.twitter.tweet.setuphandlers.import_various">
+    </genericsetup:importStep>
+
+
+    <browser:page 
+      for="plone.app.contentrules.browser.interfaces.IRuleActionAdding"
+      name="collective.twitter.tweet.TweetContent"
+      class=".content.ActionAddForm"
+      permission="cmf.ManagePortal"
+      />
+
+    <browser:page 
+      for="collective.twitter.tweet.interfaces.ITweetContent"
+      name="edit"
+      class=".content.ActionEditForm"
+      permission="cmf.ManagePortal"
+      />
+
+    <plone:ruleAction
+        name="collective.twitter.tweet.TweetContent"
+        title="Tweet new content's title and url"
+        description="Send a tweet containing the content's title an a shortened URL to it."
+        for="*"
+        event="zope.component.interfaces.IObjectEvent"
+        addview="collective.twitter.tweet.TweetContent"
+        editview="edit"
+        schema=".interfaces.ITweetContent"
+        factory=".content.Action"
+        i18n:attributes="title; description"
+        />
+
+    <adapter factory=".content.ActionExecutor" />
+
+</configure>
