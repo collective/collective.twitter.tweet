@@ -21,12 +21,18 @@ from zope.component import getUtility
 from zope.component.interfaces import IObjectEvent
 
 from plone.app.contentrules.browser.formhelper import AddForm
-from plone.app.contentrules.browser.formhelper import EditForm 
+from plone.app.contentrules.browser.formhelper import EditForm
+
+from plone.app.uuid.utils import uuidToObject
 
 from plone.contentrules.rule.interfaces import IExecutable 
 from plone.contentrules.rule.interfaces import IRuleElementData
 
 from plone.registry.interfaces import IRegistry
+
+from plone.uuid.interfaces import IUUID
+
+from Products.CMFCore.utils import getToolByName
 
 from Products.statusmessages.interfaces import IStatusMessage
 
@@ -82,7 +88,15 @@ class ActionExecutor(object):
         self.event = event
 
     def __call__(self):
-        context = aq_inner(self.event.object)
+        obj = aq_inner(self.event.object)
+
+        uuid = IUUID(obj, None)
+        # In a case where a previous action modified the object in any way
+        if uuid:
+            context = uuidToObject(uuid)
+        else:
+            # This should never happen, but just in case...
+            context = obj
 
         request = context.REQUEST
 
