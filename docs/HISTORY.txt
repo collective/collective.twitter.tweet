@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-1.0b2 (Unreleased)
+1.0b2 (2012-09-05)
 ^^^^^^^^^^^^^^^^^^
 
 - Get the object from the catalog, in case it was modified by a previous rule. [frapell]
