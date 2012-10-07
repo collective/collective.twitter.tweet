@@ -149,13 +149,11 @@ class ActionExecutor(object):
             try:
                 status = tw.PostUpdate(text)
                 msg = _("Tweet sent: ${tweet}", mapping=dict(tweet=text))
-            except HTTPError, e:
+
+            except (twitter.TwitterError, HTTPError, URLError), e:
                 msg = _("There was an error while sending the tweet: "
                         "${error}", mapping=dict(error=str(e)))
-            except twitter.TwitterError, e:
-                msg = _("There was an error while sending the tweet: "
-                        "${error}", mapping=dict(error=str(e)))
-                
+
             IStatusMessage(request).addStatusMessage(msg, "info")
 
             request.response.redirect(context.absolute_url())

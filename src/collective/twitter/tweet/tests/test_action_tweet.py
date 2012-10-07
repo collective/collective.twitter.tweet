@@ -71,6 +71,7 @@ class TestTweetAction(unittest.TestCase):
         self.folder.invokeFactory('Document', 'longtitle', title="A"*200)
         self.folder.invokeFactory('Document', 'timeout', title="Timeout")
         self.folder.invokeFactory('Document', 'error', title="Error")
+        self.folder.invokeFactory('Document', 'urlerror', title="URLError")
 
         persistentTwitter.resetCredentials()
         persistentTwitter.resetMessage()
@@ -206,6 +207,20 @@ class TestTweetAction(unittest.TestCase):
         self.assertEquals(status_msg,
                           (u'There was an error while sending the tweet: '
                             'Internal Error'))
+
+    def testURLError(self):
+        self._loadAccounts(2)
+        e = Action()
+        e.tw_account = 'first-valid-account'
+        executor = getMultiAdapter((self.folder, e, DummyEvent(self.folder.urlerror)),
+                                   IExecutable)
+
+        self.assertEquals(True, executor())
+
+        status_msg = IStatusMessage(self.request).showStatusMessages()[0].message
+        self.assertEquals(status_msg,
+                          (u'There was an error while sending the tweet: '
+                            '<urlopen error URL Error>'))
 
     def testInvalidAccount(self):
         e = Action()

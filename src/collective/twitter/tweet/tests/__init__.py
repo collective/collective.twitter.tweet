@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import twitter
-from urllib2 import HTTPError
+from urllib2 import HTTPError, URLError
 
 class PersistentTwitter(object):
     """
@@ -70,6 +70,10 @@ class Api(object):
         
 
     def PostUpdate(self, text):
+
+        if 'URLError' in text:
+            raise URLError("URL Error")
+
         if 'Timeout' in text:
             raise HTTPError("http://none.com", 408, "Timeout", {}, None)
 
